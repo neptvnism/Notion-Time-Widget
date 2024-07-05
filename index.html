@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notion Clock Widget</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    form {
+      margin-bottom: 40px;
+      font-size: 1.25rem;
+    }
+    #description {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    #livePreview {
+      margin-top: 40px;
+      font-size: 4rem;
+      text-align: center;
+    }
+    #liveDate {
+      font-size: 2rem;
+      display: block;
+    }
+    button {
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      padding: 10px 20px;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Customize Your Notion Clock Widget! ⏰ </h1>
+  <div id="description">
+    <p>
+      Make your clock widget exactly the way you like it!<br>
+      Featuring a dark mode that seamlessly blends with notion's.<br>
+      Embed the generated link once you save your changes, or keep previewing until you find your desired clock!
+    </p>
+  </div>
+  
+  <form id="customizationForm">
+    <div>
+      <label>
+        <input type="checkbox" id="toggleShadows"> Enable Shadows
+      </label>
+    </div>
+    <div style="margin-top:20px;">
+      <label>
+        <input type="checkbox" id="toggleDarkMode"> Enable Dark Mode
+      </label>
+    </div>
+    <div style="margin-top:20px;">
+      <label>
+        <input type="checkbox" id="toggleDate"> Show Date
+      </label>
+    </div>
+    <div style="margin-top:20px;">
+      <label for="fontSelect">Select Font:</label>
+      <select id="fontSelect">
+        <option value="sans-serif">Sans-Serif</option>
+        <option value="serif">Serif</option>
+        <option value="monospace">Monospace</option>
+        <option value="'Arial Rounded MT Bold', Arial, sans-serif">Arial Rounded MT Bold</option>
+      </select>
+    </div>
+    <button type="submit">Save Changes</button>
+  </form>
+  
+  <div>
+    <label for="generatedLink">Generated Link: </label>
+    <a id="generatedLink" href="#" target="_blank">Click here</a>
+  </div>
+  
+  <div id="livePreview">
+    <span id="liveDate"></span>
+    <span id="liveTime"></span>
+  </div>
+  
+  <script>
+    function applyLivePreview(shadows, darkMode, date, font) {
+      const livePreview = document.getElementById('livePreview');
+      const liveDate = document.getElementById('liveDate');
+      const liveTime = document.getElementById('liveTime');
+
+      // Apply dark mode styles
+      document.body.style.backgroundColor = darkMode ? '#191919' : 'white';
+      document.body.style.color = darkMode ? 'white' : 'black';
+      livePreview.style.color = darkMode ? 'white' : 'black';
+
+      // Apply shadow styles
+      livePreview.style.textShadow = shadows ? '0 4px 8px rgba(0, 0, 0, 0.1)' : 'none';
+
+      // Apply font
+      livePreview.style.fontFamily = font;
+
+      // Display date
+      if (date) {
+        liveDate.style.display = 'block';
+        liveDate.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      } else {
+        liveDate.style.display = 'none';
+      }
+
+      // Update time every second
+      function updateTime() {
+        const now = new Date();
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+        let timeString = `${hours}:${minutes}`;
+        liveTime.textContent = timeString;
+      }
+
+      updateTime();
+      setInterval(updateTime, 1000);
+    }
+
+    document.getElementById('customizationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const toggleShadows = document.getElementById('toggleShadows').checked;
+      const toggleDarkMode = document.getElementById('toggleDarkMode').checked;
+      const toggleDate = document.getElementById('toggleDate').checked;
+      const selectedFont = document.getElementById('fontSelect').value;
+
+      const queryParams = new URLSearchParams({
+        shadows: toggleShadows,
+        darkMode: toggleDarkMode,
+        date: toggleDate,
+        font: selectedFont
+      });
+
+      const generatedLink = document.getElementById('generatedLink');
+      generatedLink.href = `time.html?${queryParams.toString()}`;
+
+      // Apply preview on form submit
+      applyLivePreview(toggleShadows, toggleDarkMode, toggleDate, selectedFont);
+    });
+
+    // Apply default preview on page load
+    applyLivePreview(false, false, false, 'sans-serif');
+  </script>
+</body>
+</html>

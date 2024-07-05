@@ -1,0 +1,22 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: white; 
+  font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+}
+
+.time-widget {
+  background-color: transparent;
+  color: black;
+  font-size: 4rem;
+  padding: 0;
+  box-shadow: none;
+  text-align: center;
+}
+
+#date {
+  font-size: 2rem;
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notion Clock Widget</title>
+  <link rel="stylesheet" href="style.css">
+  <style id="customStyles"></style>
+</head>
+<body>
+  <div class="time-widget" id="timeWidget">
+    <div id="date" style="display: none; font-size: 2rem;"></div>
+    <div id="time" style="font-size: 4rem;"></div>
+  </div>
+  <script>
+    function applyCustomizations() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.get('darkMode') === 'true') {
+        document.body.style.backgroundColor = '#191919';
+        document.body.style.color = 'white';
+        document.querySelector('.time-widget').style.color = 'white';
+      }
+
+      if (params.get('shadows') === 'true') {
+        document.querySelector('.time-widget').style.textShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+      } else {
+        document.querySelector('.time-widget').style.textShadow = 'none';
+      }
+
+      if (params.get('font')) {
+        document.querySelector('.time-widget').style.fontFamily = params.get('font');
+      }
+
+      if (params.get('date') === 'true') {
+        document.getElementById('date').style.display = 'block';
+        document.getElementById('date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      window.use12HourFormat = params.get('hourFormat') === 'true';
+    }
+
+    function updateTime() {
+      const timeElem = document.getElementById('time');
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = String(now.getMinutes()).padStart(2, '0');
+      let ampm = '';
+
+      if (window.use12HourFormat) {
+        ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+      }
+
+      let timeString = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`.trim();
+      timeElem.textContent = timeString;
+    }
+
+    applyCustomizations();
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
